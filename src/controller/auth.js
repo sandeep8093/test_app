@@ -22,7 +22,7 @@ exports.signup = async (req, res) => {
   
       res.status(200).json({
         type: "success",
-        message: "Account created OTP sended to mobile number",
+        message: "Account created for this mobile number",
         data: {
           userId: user._id,
         },
@@ -35,10 +35,11 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
  try{
     const { phone } = req.body;
-    const user = await User.findOne({ phone });
+    const user = await User.findOne({ "phone":phone });
     if (!user) {
         return res.status(400).json({ message: 'This Phone Number does not Exists' });
     }
+    console.log(user)
     res.status(201).json({
       type: "success",
       message: "OTP sended to your registered phone number",
@@ -53,7 +54,7 @@ exports.signin = async (req, res) => {
     user.phoneOtp = otp;
     await user.save();
     // send otp to phone number
-    await fast2sms(
+    await otpverify.fast2sms(
       {
         message: `Your OTP is ${otp}`,
         contactNumber: user.phone,
@@ -99,9 +100,8 @@ try {
 }
 exports.signout = async (req, res) => {
     let currentUser = req.user;
-
-    let user = await User.findOne({ _id: currentUser.id });
-    user.jwttoken=''
+    let user = await User.findOne({ "_id": currentUser.userId });
+    user.jwttoken=" "
     await user.save();
   res.status(200).json({ message: 'You have signed out successfully' });
 };

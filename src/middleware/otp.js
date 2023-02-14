@@ -12,8 +12,10 @@ exports.generateOTP = (otp_length) => {
   return OTP;
 };
 
-exports.fast2sms = async ({ message, contactNumber }, next) => {
+exports.fast2sms = async ({ message, contactNumber }) => {
   try {
+    console.log("hh")
+    console.log(FAST2SMS)
     const res = await fast2sms.sendMessage({
       authorization: FAST2SMS,
       message,
@@ -21,6 +23,6 @@ exports.fast2sms = async ({ message, contactNumber }, next) => {
     });
     console.log(res);
   } catch (error) {
-    next(error);
+    console.log(error)
   }
 };
